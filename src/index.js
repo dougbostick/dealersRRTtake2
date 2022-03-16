@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import axios from "axios";
+import PostForm from "./PostForm";
 
 class StudentList extends React.Component {
   constructor() {
@@ -16,13 +17,20 @@ class StudentList extends React.Component {
     this.setState({ students: studentData });
   }
 
-  //add a post component here
+  async deleteStudent(student) {
+    await axios.delete(`/api/students/${student.id}`);
+    const students = this.state.students.filter(
+      (notDeleted) => notDeleted.id !== student.id
+    );
+    this.setState({ students });
+  }
 
   render() {
     const studentEls = this.state.students.map((student) => {
       return (
         <li key={student.id}>
           {student.name}, {student.year}, {student.subject.name}
+          <button onClick={() => this.deleteStudent(student)}>X</button>
         </li>
       );
     });
@@ -30,6 +38,11 @@ class StudentList extends React.Component {
       <div>
         <h1>Students</h1>
         <ul>{studentEls}</ul>
+        {/* <form method="POST">
+          <input type="text" name="name"></input>
+          <button>Submit</button>
+        </form> */}
+        <PostForm />
       </div>
     );
   }

@@ -25,11 +25,21 @@ app.get("/api/students", async (req, res, next) => {
   }
 });
 
+app.delete("/api/students/:id", async (req, res, next) => {
+  try {
+    const target = await Student.findByPk(req.params.id);
+    await target.destroy();
+    res.sendStatus(204);
+  } catch (ex) {
+    next(ex);
+  }
+});
+
 app.post("/api/students", async (req, res, next) => {
   try {
     const name = req.body.name;
     const newStudent = await Student.create({ name: name });
-    res.status(204).send(newStudent);
+    res.status(201).send(newStudent);
   } catch (ex) {
     next(ex);
   }
