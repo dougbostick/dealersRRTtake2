@@ -7,7 +7,8 @@ const sequelize = new Sequelize(
 );
 
 app.use("/dist", express.static(path.join(__dirname, "dist")));
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
@@ -37,8 +38,12 @@ app.delete("/api/students/:id", async (req, res, next) => {
 
 app.post("/api/students", async (req, res, next) => {
   try {
+    console.log("post route", req.body);
     const name = req.body.name;
     const newStudent = await Student.create({ name: name });
+    // const studentWithSubject = await Student.findByPk(newStudent.id, {
+    //   include: Subject,
+    // });
     res.status(201).send(newStudent);
   } catch (ex) {
     next(ex);
@@ -57,7 +62,7 @@ const Subject = sequelize.define("subjects", {
   name: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false,
+    allowNull: true,
   },
 });
 
@@ -68,7 +73,7 @@ const Student = sequelize.define("students", {
   },
   year: {
     type: Sequelize.STRING,
-    //allowNull: false,
+    allowNull: true,
   },
 });
 //associations

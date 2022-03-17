@@ -2,14 +2,14 @@ import React from "react";
 import { render } from "react-dom";
 import axios from "axios";
 import PostForm from "./PostForm";
+import store from "./store";
 
 class StudentList extends React.Component {
   constructor() {
     super();
-    this.state = {
-      students: [],
-    };
+    this.state = store.getState();
   }
+
   async componentDidMount() {
     const studentRes = await axios.get("/api/students");
     console.log("studentRes", studentRes);
@@ -29,7 +29,7 @@ class StudentList extends React.Component {
     const studentEls = this.state.students.map((student) => {
       return (
         <li key={student.id}>
-          {student.name}, {student.year}, {student.subject.name}
+          {student.name}, {student.year}
           <button onClick={() => this.deleteStudent(student)}>X</button>
         </li>
       );
