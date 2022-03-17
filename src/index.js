@@ -4,19 +4,11 @@ import axios from "axios";
 import PostForm from "./PostForm";
 import store from "./store";
 import { connect, Provider } from "react-redux";
+import { getStudents } from "./store";
 
 class StudentList extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.state = store.getState();
-  // }
-
   async componentDidMount() {
-    const studentRes = await axios.get("/api/students");
-    //console.log("studentRes", studentRes);
-    const studentData = studentRes.data;
-    store.dispatch({ type: "STUDENTS", students: studentData });
-    //store.subscribe(() => this.setState(store.getState()));
+    this.props.fetchStudents();
   }
 
   async deleteStudent(student) {
@@ -28,7 +20,6 @@ class StudentList extends React.Component {
   }
 
   render() {
-    // console.log("student list state", this.state);
     const studentEls = this.props.students.map((student) => {
       return (
         <li key={student.id}>
@@ -52,9 +43,13 @@ const mapState = (reduxState) => {
     students: reduxState.students,
   };
 };
-// const mapDispatch = () => {};
+const mapDispatch = (dispatch) => {
+  return {
+    fetchStudents: () => dispatch(getStudents()),
+  };
+};
 
-const ConnectedSL = connect(mapState, null)(StudentList);
+const ConnectedSL = connect(mapState, mapDispatch)(StudentList);
 
 render(
   <Provider store={store}>

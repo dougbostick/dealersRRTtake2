@@ -1,13 +1,18 @@
 import { createStore, applyMiddleware } from "redux";
-import reduxLogger from "redux-logger";
+import thunks from "redux-thunk";
+import axios from "axios";
 
-// const getStudents = () => {
-//   return {
-//     type: STUDENTS,
-//     action: [{ name: "doug", year: "freshman" }],
-//   };
-// };
-
+export const getStudents = () => {
+  return async (dispatch) => {
+    try {
+      const studentRes = await axios.get("/api/students");
+      const studentData = studentRes.data;
+      store.dispatch({ type: "STUDENTS", students: studentData });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
 const STUDENTS = "STUDENTS";
 
 const initialState = { students: [] };
@@ -22,6 +27,6 @@ const reducer = (state = initialState, action) => {
   return state;
 };
 
-const store = createStore(reducer, applyMiddleware(reduxLogger));
+const store = createStore(reducer, applyMiddleware(thunks));
 
 export default store;
